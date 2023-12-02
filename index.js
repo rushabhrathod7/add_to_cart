@@ -13,34 +13,43 @@ const inputFieldEl = document.getElementById("input-field")
 const addButtonEl = document.getElementById("add-button")
 const shoppingListEl = document.getElementById("shopping-list")
 
+// Fixed code to prevent rendering blank input as list items
+
 addButtonEl.addEventListener("click", function() {
-    let inputValue = inputFieldEl.value
+    let inputValue = inputFieldEl.value.trim(); // Trim input value
     
-    push(shoppingListInDB, inputValue)
-    
-    clearInputFieldEl()
-})
+    if (inputValue !== '') { // Check for non-blank input
+        push(shoppingListInDB, inputValue);
+        clearInputFieldEl();
+    }
+});
 
 onValue(shoppingListInDB, function(snapshot) {
     if (snapshot.exists()) {
-        let itemsArray = Object.entries(snapshot.val())
-    
-        clearShoppingListEl()
-        
+        let itemsArray = Object.entries(snapshot.val());
+
+        clearShoppingListEl();
+
         for (let i = 0; i < itemsArray.length; i++) {
-            let currentItem = itemsArray[i]
-            let currentItemID = currentItem[0]
-            let currentItemValue = currentItem[1]
-            
-            appendItemToShoppingListEl(currentItem)
-        }    
+            let currentItem = itemsArray[i];
+            let currentItemID = currentItem[0];
+            let currentItemValue = currentItem[1];
+
+            // Check if currentItemValue is not empty before appending
+            if (currentItemValue.trim() !== '') {
+                appendItemToShoppingListEl(currentItem);
+            }
+        }
     } else {
-        shoppingListEl.innerHTML = "No items here... yet"
+        shoppingListEl.innerHTML = "No items here... yet";
     }
-})
+});
+
+// Other functions remain unchanged
+
 
 function clearShoppingListEl() {
-    shoppingListEl.innerHTML = ""
+    shoppingListEl.innerHTML = null
 }
 
 function clearInputFieldEl() {
